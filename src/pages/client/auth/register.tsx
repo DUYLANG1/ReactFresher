@@ -2,7 +2,8 @@ import { App, Button, Divider, Form, Input } from "antd";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "@/pages/client/auth/register.scss";
-import { loginAPI, registerAPI } from "@/services/api";
+import { registerAPI } from "@/services/api";
+import { CLIENT_RENEG_WINDOW } from "node:tls";
 
 type FieldType = {
   fullName: string;
@@ -19,10 +20,8 @@ const RegisterPage = () => {
   const onFinish = async (values: FieldType) => {
     setIsSubmit(true);
     const { fullName, email, password, phone } = values;
-
     const res = await registerAPI(fullName, email, password, phone);
-    if (res.data) {
-      //success
+    if (!res.error) {
       message.success("Register success");
       navigate("/login");
     } else {

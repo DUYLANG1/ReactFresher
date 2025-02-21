@@ -5,7 +5,9 @@ declare global {
     error?: string | string[];
     message: string;
     statusCode: number | string;
-    data?: T;
+    data: T;
+    access_token: string;
+    user: IUser;
   }
 
   interface IModelPaginate<T> {
@@ -34,5 +36,18 @@ declare global {
     _id: string;
     email: string;
     fullName: string;
+  }
+
+  interface IUser {
+    email: string;
+    phone: string;
+    fullName: string;
+    role: string;
+    avatar: string;
+    id: string;
+  }
+
+  interface IFetchAccount {
+    user: IUser;
   }
 }
