@@ -8,6 +8,9 @@ declare global {
     data: T;
     access_token: string;
     user: IUser;
+    email: string;
+    matchedCount: number;
+    deletedCount: number;
   }
 
   interface IModelPaginate<T> {
@@ -17,7 +20,7 @@ declare global {
       pages: number;
       total: number;
     };
-    results: T[];
+    result: T[];
   }
 
   interface ILogin {
@@ -36,6 +39,7 @@ declare global {
     _id: string;
     email: string;
     fullName: string;
+    phone: string;
   }
 
   interface IUser {
@@ -49,5 +53,23 @@ declare global {
 
   interface IFetchAccount {
     user: IUser;
+  }
+
+  interface IUserTable {
+    _id: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    role: string;
+    avatar: string;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+
+  interface IResponseImport {
+    countSuccess: number;
+    countError: number;
+    detaill: any;
   }
 }
