@@ -11,7 +11,9 @@ import { CSVLink } from "react-csv";
 import { ProTable } from "@ant-design/pro-components";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { dateRangeValidate } from "@/services/helper";
-import { getBooksAPI } from "@/services/api";
+import { deleteBookAPI, getBooksAPI } from "@/services/api";
+import CreateBook from "./create.book";
+import UpdateBook from "./update.book";
 
 type TSearch = {
   mainText: string;
@@ -42,20 +44,20 @@ const TableBook = () => {
   const [dataUpdate, setDataUpdate] = useState<IBookTable | null>(null);
 
   const [isDeleteBook, setIsDeleteBook] = useState<boolean>(false);
-  // const { message, notification } = App.useApp();
+  const { message, notification } = App.useApp();
 
   const handleDeleteBook = async (_id: string) => {
     setIsDeleteBook(true);
-    // const res = await deleteUserAPI(_id);
-    // if (res && res.data) {
-    //     message.success('Xóa book thành công');
-    //     refreshTable();
-    // } else {
-    //     notification.error({
-    //         message: 'Đã có lỗi xảy ra',
-    //         description: res.message
-    //     })
-    // }
+    const res = await deleteBookAPI(_id);
+    if (res && res.data) {
+      message.success("Xóa book thành công");
+      refreshTable();
+    } else {
+      notification.error({
+        message: "Đã có lỗi xảy ra",
+        description: res.message,
+      });
+    }
     setIsDeleteBook(false);
   };
 
@@ -130,7 +132,7 @@ const TableBook = () => {
           <>
             <EditTwoTone
               twoToneColor="#f57800"
-              style={{ cursor: "pointer", margin: "0 5px" }}
+              style={{ cursor: "pointer", margin: "0 10px" }}
               onClick={() => {
                 setOpenModalUpdate(true);
                 setDataUpdate(entity);
@@ -227,11 +229,11 @@ const TableBook = () => {
         }}
         headerTitle="Table book"
         toolBarRender={() => [
-          <Button icon={<ExportOutlined />} type="primary">
-            <CSVLink data={currentDataTable} filename="export-book.csv">
+          <CSVLink data={currentDataTable} filename="export-book.csv">
+            <Button icon={<ExportOutlined />} type="primary">
               Export
-            </CSVLink>
-          </Button>,
+            </Button>
+          </CSVLink>,
 
           <Button
             key="button"
@@ -245,8 +247,24 @@ const TableBook = () => {
           </Button>,
         ]}
       />
-
-      <DetailBook />
+      <DetailBook
+        openViewDetail={openViewDetail}
+        setOpenViewDetail={setOpenViewDetail}
+        dataViewDetail={dataViewDetail}
+        setDataViewDetail={setDataViewDetail}
+      />
+      <CreateBook
+        openModalCreate={openModalCreate}
+        setOpenModalCreate={setOpenModalCreate}
+        refreshTable={refreshTable}
+      />
+      <UpdateBook
+        openModalUpdate={openModalUpdate}
+        setOpenModalUpdate={setOpenModalUpdate}
+        refreshTable={refreshTable}
+        dataUpdate={dataUpdate}
+        setDataUpdate={setDataUpdate}
+      />
     </>
   );
 };

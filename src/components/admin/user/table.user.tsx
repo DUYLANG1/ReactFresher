@@ -156,7 +156,6 @@ const TableUser = () => {
         actionRef={actionRef}
         cardBordered
         request={async (params, sort, filter) => {
-          console.log(params, sort, filter);
           let query = "";
           if (params) {
             query += `current=${params.current}&pageSize=${params.pageSize}`;
@@ -174,7 +173,6 @@ const TableUser = () => {
           }
 
           //default
-
           if (sort && sort.createdAt) {
             query += `&sort=${
               sort.createdAt === "ascend" ? "createdAt" : "-createdAt"
@@ -210,11 +208,11 @@ const TableUser = () => {
         }}
         headerTitle="Table user"
         toolBarRender={() => [
-          <Button icon={<ExportOutlined />} type="primary">
-            <CSVLink data={currentDataTable} filename="export-user.csv">
+          <CSVLink data={currentDataTable} filename="export-user.csv">
+            <Button icon={<ExportOutlined />} type="primary">
               Export
-            </CSVLink>
-          </Button>,
+            </Button>
+          </CSVLink>,
 
           <Button
             icon={<CloudUploadOutlined />}
