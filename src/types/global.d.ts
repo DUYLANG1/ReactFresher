@@ -5,12 +5,7 @@ declare global {
     error?: string | string[];
     message: string;
     statusCode: number | string;
-    data: T;
-    access_token: string;
-    user: IUser;
-    email: string;
-    matchedCount: number;
-    deletedCount: number;
+    data?: T;
   }
 
   interface IModelPaginate<T> {
@@ -39,7 +34,6 @@ declare global {
     _id: string;
     email: string;
     fullName: string;
-    phone: string;
   }
 
   interface IUser {
@@ -70,6 +64,20 @@ declare global {
   interface IResponseImport {
     countSuccess: number;
     countError: number;
-    detaill: any;
+    detail: any;
+  }
+
+  interface IBookTable {
+    _id: string;
+    thumbnail: string;
+    slider: string[];
+    mainText: string;
+    author: string;
+    price: number;
+    sold: number;
+    quantity: number;
+    category: string;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }

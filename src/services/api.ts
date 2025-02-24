@@ -7,7 +7,7 @@ export const loginAPI = (username: string, password: string) => {
     { username, password },
     {
       headers: {
-        delay: 500,
+        delay: 3000,
       },
     }
   );
@@ -32,7 +32,7 @@ export const fetchAccountAPI = () => {
   const urlBackend = "/api/v1/auth/account";
   return axios.get<IBackendRes<IFetchAccount>>(urlBackend, {
     headers: {
-      delay: 500,
+      delay: 1000,
     },
   });
 };
@@ -44,7 +44,7 @@ export const logoutAPI = () => {
 
 export const getUsersAPI = (query: string) => {
   const urlBackend = `/api/v1/user?${query}`;
-  return axios.get<IModelPaginate<IUserTable>>(urlBackend);
+  return axios.get<IBackendRes<IModelPaginate<IUserTable>>>(urlBackend);
 };
 
 export const createUserAPI = (
@@ -53,7 +53,7 @@ export const createUserAPI = (
   password: string,
   phone: string
 ) => {
-  const urlBackend = `/api/v1/user`;
+  const urlBackend = "/api/v1/user";
   return axios.post<IBackendRes<IRegister>>(urlBackend, {
     fullName,
     email,
@@ -63,19 +63,19 @@ export const createUserAPI = (
 };
 
 export const bulkCreateUserAPI = (
-  data: {
+  hoidanit: {
     fullName: string;
-    email: string;
     password: string;
+    email: string;
     phone: string;
   }[]
 ) => {
-  const urlBackend = `/api/v1/user`;
-  return axios.post<IBackendRes<IResponseImport>>(urlBackend, data);
+  const urlBackend = "/api/v1/user/bulk-create";
+  return axios.post<IBackendRes<IResponseImport>>(urlBackend, hoidanit);
 };
 
 export const updateUserAPI = (_id: string, fullName: string, phone: string) => {
-  const urlBackend = "/api/v1/user/";
+  const urlBackend = "/api/v1/user";
   return axios.put<IBackendRes<IRegister>>(urlBackend, {
     _id,
     fullName,
@@ -86,4 +86,9 @@ export const updateUserAPI = (_id: string, fullName: string, phone: string) => {
 export const deleteUserAPI = (_id: string) => {
   const urlBackend = `/api/v1/user/${_id}`;
   return axios.delete<IBackendRes<IRegister>>(urlBackend);
+};
+
+export const getBooksAPI = (query: string) => {
+  const urlBackend = `/api/v1/book?${query}`;
+  return axios.get<IBackendRes<IModelPaginate<IBookTable>>>(urlBackend);
 };

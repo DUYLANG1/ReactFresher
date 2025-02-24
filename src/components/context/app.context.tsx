@@ -1,6 +1,6 @@
 import { fetchAccountAPI } from "@/services/api";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { PacmanLoader } from "react-spinners";
+import { createContext, useContext, useEffect, useState } from "react";
+import PacmanLoader from "react-spinners/PacmanLoader";
 
 interface IAppContext {
   isAuthenticated: boolean;
@@ -25,12 +25,13 @@ export const AppProvider = (props: TProps) => {
   useEffect(() => {
     const fetchAccount = async () => {
       const res = await fetchAccountAPI();
-      if (res.user) {
-        setUser(res.user);
+      if (res.data) {
+        setUser(res.data.user);
         setIsAuthenticated(true);
       }
       setIsAppLoading(false);
     };
+
     fetchAccount();
   }, []);
 
@@ -66,13 +67,13 @@ export const AppProvider = (props: TProps) => {
 };
 
 export const useCurrentApp = () => {
-  const currentApprContext = useContext(CurrentAppContext);
+  const currentAppContext = useContext(CurrentAppContext);
 
-  if (!currentApprContext) {
+  if (!currentAppContext) {
     throw new Error(
-      "useCurrentApp has to be used within <CurrentUserContext.Provider>"
+      "useCurrentApp has to be used within <CurrentAppContext.Provider>"
     );
   }
 
-  return currentApprContext;
+  return currentAppContext;
 };

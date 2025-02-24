@@ -47,7 +47,7 @@ const UpdateUser = (props: IProps) => {
     const { _id, fullName, phone } = values;
     setIsSubmit(true);
     const res = await updateUserAPI(_id, fullName, phone);
-    if (res && res.matchedCount === 1) {
+    if (res && res.data) {
       message.success("Cập nhật user thành công");
       form.resetFields();
       setOpenModalUpdate(false);

@@ -6,9 +6,7 @@ import { useState } from "react";
 import Exceljs from "exceljs";
 import { Buffer } from "buffer";
 import { bulkCreateUserAPI } from "@/services/api";
-
-const templateFile = "/user.xlsx";
-
+import templateFile from "assets/template/user.xlsx?url";
 const { Dragger } = Upload;
 
 interface IProps {
@@ -25,6 +23,7 @@ interface IDataImport {
 
 const ImportUser = (props: IProps) => {
   const { setOpenModalImport, openModalImport, refreshTable } = props;
+
   const { message, notification } = App.useApp();
   const [dataImport, setDataImport] = useState<IDataImport[]>([]);
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
@@ -42,7 +41,7 @@ const ImportUser = (props: IProps) => {
     customRequest({ file, onSuccess }) {
       setTimeout(() => {
         if (onSuccess) onSuccess("ok");
-      }, 500);
+      }, 1000);
     },
 
     async onChange(info) {
@@ -55,6 +54,7 @@ const ImportUser = (props: IProps) => {
         message.success(`${info.file.name} file uploaded successfully.`);
         if (info.fileList && info.fileList.length > 0) {
           const file = info.fileList[0].originFileObj!;
+
           //load file to buffer
           const workbook = new Exceljs.Workbook();
           const arrayBuffer = await file.arrayBuffer();
@@ -80,7 +80,6 @@ const ImportUser = (props: IProps) => {
               jsonData.push(obj);
             });
           });
-
           jsonData = jsonData.map((item, index) => {
             return { ...item, id: index + 1 };
           });
@@ -104,7 +103,7 @@ const ImportUser = (props: IProps) => {
       password: import.meta.env.VITE_USER_CREATE_DEFAULT_PASSWORD,
     }));
     const res = await bulkCreateUserAPI(dataSubmit);
-    if (res.statusCode === 201) {
+    if (res.data) {
       notification.success({
         message: "Bulk Create Users",
         description: `Success = ${res.data.countSuccess}. Error = ${res.data.countError}`,

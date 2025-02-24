@@ -28,7 +28,7 @@ const CreateUser = (props: IProps) => {
     const { fullName, password, email, phone } = values;
     setIsSubmit(true);
     const res = await createUserAPI(fullName, email, password, phone);
-    if (res && res?.email) {
+    if (res && res.data) {
       message.success("Tạo mới user thành công");
       form.resetFields();
       setOpenModalCreate(false);

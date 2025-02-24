@@ -50,7 +50,7 @@ const TableUser = () => {
   const handleDeleteUser = async (_id: string) => {
     setIsDeleteUser(true);
     const res = await deleteUserAPI(_id);
-    if (res && res.deletedCount === 1) {
+    if (res && res.data) {
       message.success("Xóa user thành công");
       refreshTable();
     } else {
@@ -156,6 +156,7 @@ const TableUser = () => {
         actionRef={actionRef}
         cardBordered
         request={async (params, sort, filter) => {
+          console.log(params, sort, filter);
           let query = "";
           if (params) {
             query += `current=${params.current}&pageSize=${params.pageSize}`;
@@ -165,13 +166,15 @@ const TableUser = () => {
             if (params.fullName) {
               query += `&fullName=/${params.fullName}/i`;
             }
+
             const createDateRange = dateRangeValidate(params.createdAtRange);
             if (createDateRange) {
-              query += `&createdAt>=${params.createdAtRange[0]}&createdAt<=${params.createdAtRange[1]}`;
+              query += `&createdAt>=${createDateRange[0]}&createdAt<=${createDateRange[1]}`;
             }
           }
 
           //default
+
           if (sort && sort.createdAt) {
             query += `&sort=${
               sort.createdAt === "ascend" ? "createdAt" : "-createdAt"
@@ -179,27 +182,16 @@ const TableUser = () => {
           } else query += `&sort=-createdAt`;
 
           const res = await getUsersAPI(query);
-          if (res.result) {
-            setMeta(res.meta);
-            setCurrentDataTable(res?.result ?? []);
+          if (res.data) {
+            setMeta(res.data.meta);
+            setCurrentDataTable(res.data?.result ?? []);
           }
           return {
-            data: res?.result,
+            data: res.data?.result,
             page: 1,
             success: true,
-            total: res?.meta.total,
+            total: res.data?.meta.total,
           };
-        }}
-        editable={{
-          type: "multiple",
-        }}
-        columnsState={{
-          persistenceKey: "pro-table-singe-demos",
-          persistenceType: "localStorage",
-          defaultValue: {
-            option: { fixed: "right", disable: true },
-          },
-          onChange(value) {},
         }}
         rowKey="_id"
         pagination={{
@@ -210,39 +202,20 @@ const TableUser = () => {
           showTotal: (total, range) => {
             return (
               <div>
-                {range[0]} - {range[1]} / {total} rows
+                {" "}
+                {range[0]}-{range[1]} trên {total} rows
               </div>
             );
           },
-          pageSizeOptions: [3, 5, 10, 20],
         }}
-        search={{
-          labelWidth: "auto",
-        }}
-        options={{
-          setting: {
-            listsHeight: 400,
-          },
-        }}
-        form={{
-          syncToUrl: (values, type) => {
-            if (type === "get") {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
-        dateFormatter="string"
         headerTitle="Table user"
         toolBarRender={() => [
-          <Button icon={<ExportOutlined />} type="default">
+          <Button icon={<ExportOutlined />} type="primary">
             <CSVLink data={currentDataTable} filename="export-user.csv">
               Export
             </CSVLink>
           </Button>,
+
           <Button
             icon={<CloudUploadOutlined />}
             type="primary"
@@ -250,6 +223,7 @@ const TableUser = () => {
           >
             Import
           </Button>,
+
           <Button
             key="button"
             icon={<PlusOutlined />}
@@ -268,16 +242,19 @@ const TableUser = () => {
         dataViewDetail={dataViewDetail}
         setDataViewDetail={setDataViewDetail}
       />
+
       <CreateUser
         openModalCreate={openModalCreate}
         setOpenModalCreate={setOpenModalCreate}
         refreshTable={refreshTable}
       />
+
       <ImportUser
         openModalImport={openModalImport}
         setOpenModalImport={setOpenModalImport}
         refreshTable={refreshTable}
       />
+
       <UpdateUser
         openModalUpdate={openModalUpdate}
         setOpenModalUpdate={setOpenModalUpdate}

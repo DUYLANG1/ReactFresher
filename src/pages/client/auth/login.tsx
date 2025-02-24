@@ -1,9 +1,9 @@
-import { loginAPI } from "@/services/api";
-import { App, Button, Divider, Input, notification } from "antd";
+import { App, Button, Divider, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, FormProps } from "antd";
-import { useState } from "react";
 import "./login.scss";
+import { useState } from "react";
+import type { FormProps } from "antd";
+import { loginAPI } from "@/services/api";
 import { useCurrentApp } from "@/components/context/app.context";
 
 type FieldType = {
@@ -14,7 +14,7 @@ type FieldType = {
 const LoginPage = () => {
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
-  const { message } = App.useApp();
+  const { message, notification } = App.useApp();
   const { setIsAuthenticated, setUser } = useCurrentApp();
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
@@ -22,10 +22,10 @@ const LoginPage = () => {
     setIsSubmit(true);
     const res = await loginAPI(username, password);
     setIsSubmit(false);
-    if (res?.access_token) {
+    if (res?.data) {
       setIsAuthenticated(true);
-      setUser(res.user);
-      localStorage.setItem("access_token", res?.access_token);
+      setUser(res.data.user);
+      localStorage.setItem("access_token", res.data.access_token);
       message.success("Đăng nhập tài khoản thành công!");
       navigate("/");
     } else {
