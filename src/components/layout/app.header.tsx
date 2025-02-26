@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaReact } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { VscSearchFuzzy } from "react-icons/vsc";
-import { Divider, Badge, Drawer, Avatar, Popover, Empty, App } from "antd";
+import { Divider, Badge, Drawer, Avatar, Popover, Empty } from "antd";
 import { Dropdown, Space } from "antd";
 import { useNavigate } from "react-router";
 import "./app.header.scss";
@@ -21,7 +21,7 @@ const AppHeader = (props: IProps) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openManageAccount, setOpenManageAccount] = useState<boolean>(false);
 
-  const { message } = App.useApp();
+  // const { message } = App.useApp();
   const {
     isAuthenticated,
     user,

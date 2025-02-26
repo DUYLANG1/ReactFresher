@@ -9,8 +9,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Dropdown, Space, Avatar, App } from "antd";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Layout, Menu, Dropdown, Space, Avatar } from "antd";
+import { Outlet, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useCurrentApp } from "../context/app.context";
 import type { MenuProps } from "antd";
@@ -25,8 +25,8 @@ const LayoutAdmin = () => {
   const { user, setUser, setIsAuthenticated, isAuthenticated, setCarts } =
     useCurrentApp();
 
-  const { message } = App.useApp();
-  const navigate = useNavigate();
+  // const { message } = App.useApp();
+  // const navigate = useNavigate();
 
   const location = useLocation();
 
