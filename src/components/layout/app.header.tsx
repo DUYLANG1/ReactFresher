@@ -9,31 +9,49 @@ import "./app.header.scss";
 import { Link } from "react-router-dom";
 import { logoutAPI } from "@/services/api";
 import { useCurrentApp } from "../context/app.context";
+import ManageAccount from "../client/account";
+import { isMobile } from "react-device-detect";
 
-const AppHeader = () => {
+interface IProps {
+  searchTerm: string;
+  setSearchTerm: (v: string) => void;
+}
+
+const AppHeader = (props: IProps) => {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [openManageAccount, setOpenManageAccount] = useState<boolean>(false);
+
   const { message } = App.useApp();
-  const { isAuthenticated, user, setUser, setIsAuthenticated, carts } =
-    useCurrentApp();
+  const {
+    isAuthenticated,
+    user,
+    setUser,
+    setIsAuthenticated,
+    carts,
+    setCarts,
+  } = useCurrentApp();
 
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     //todo
     const res = await logoutAPI();
-    if (res) {
+    if (res.data) {
       setUser(null);
+      setCarts([]);
       setIsAuthenticated(false);
       localStorage.removeItem("access_token");
-      navigate("/login");
-      message.success("You just logout");
+      localStorage.removeItem("carts");
     }
   };
 
   let items = [
     {
       label: (
-        <label style={{ cursor: "pointer" }} onClick={() => alert("me")}>
+        <label
+          style={{ cursor: "pointer" }}
+          onClick={() => setOpenManageAccount(true)}
+        >
           Quản lý tài khoản
         </label>
       ),
@@ -124,26 +142,37 @@ const AppHeader = () => {
                 className="input-search"
                 type={"text"}
                 placeholder="Bạn tìm gì hôm nay"
-                // value={props.searchTerm}
-                // onChange={(e) => props.setSearchTerm(e.target.value)}
+                value={props.searchTerm}
+                onChange={(e) => props.setSearchTerm(e.target.value)}
               />
             </div>
           </div>
           <nav className="page-header__bottom">
             <ul id="navigation" className="navigation">
               <li className="navigation__item">
-                <Popover
-                  className="popover-carts"
-                  placement="topRight"
-                  rootClassName="popover-carts"
-                  title={"Sản phẩm mới thêm"}
-                  content={contentPopover}
-                  arrow={true}
-                >
-                  <Badge count={carts?.length ?? 0} size={"small"} showZero>
+                {!isMobile ? (
+                  <Popover
+                    className="popover-carts"
+                    placement="topRight"
+                    rootClassName="popover-carts"
+                    title={"Sản phẩm mới thêm"}
+                    content={contentPopover}
+                    arrow={true}
+                  >
+                    <Badge count={carts?.length ?? 0} size={"small"} showZero>
+                      <FiShoppingCart className="icon-cart" />
+                    </Badge>
+                  </Popover>
+                ) : (
+                  <Badge
+                    count={carts?.length ?? 0}
+                    size={"small"}
+                    showZero
+                    onClick={() => navigate("/order")}
+                  >
                     <FiShoppingCart className="icon-cart" />
                   </Badge>
-                </Popover>
+                )}
               </li>
               <li className="navigation__item mobile">
                 <Divider type="vertical" />
@@ -175,6 +204,10 @@ const AppHeader = () => {
         <p onClick={() => handleLogout()}>Đăng xuất</p>
         <Divider />
       </Drawer>
+      <ManageAccount
+        isModalOpen={openManageAccount}
+        setIsModalOpen={setOpenManageAccount}
+      />
     </>
   );
 };
